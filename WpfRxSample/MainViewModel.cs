@@ -1,62 +1,57 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
-namespace WpfApplication1
+namespace WpfRxSample
 {
-    public class MainViewModel : ViewModel, IDisposable
+    [PropertyChanged.AddINotifyPropertyChangedInterface]
+    public class MainViewModel : IDisposable
     {
         private readonly CompositeDisposable _Disposable = new CompositeDisposable();
 
-        private string _SearchText;
-        public string SearchText
-        {
-            get { return _SearchText; }
-            set { SetProperty(ref _SearchText, value); }
-        }
+        public string SearchText { get; set; }
 
-        private ImmutableList<Person> _Persons = ImmutableList<Person>.Empty;
-        public ImmutableList<Person> Persons
-        {
-            get { return _Persons; }
-            set { SetProperty(ref _Persons, value); }
-        }
+        public ImmutableList<Person> Persons { get; set; } = ImmutableList<Person>.Empty;
 
-        private double _AverageAge;
-        public double AverageAge
-        {
-            get { return _AverageAge; }
-            set { SetProperty(ref _AverageAge, value); }
-        }
+        public double AverageAge { get; set; }
 
-        private ImmutableList<LogMessage> _LogMessages = ImmutableList<LogMessage>.Empty;
-        public ImmutableList<LogMessage> LogMessages
-        {
-            get { return _LogMessages; }
-            private set { SetProperty(ref _LogMessages, value); }
-        }
+        public ImmutableStack<LogMessage> LogMessages { get; set; } = ImmutableStack<LogMessage>.Empty;
+
+        public double ZoomFactor { get; set; } = 1;
 
         public MainViewModel()
         {
             this.Changed(p => p.SearchText) // Whenever this property changes
-                .Skip(1) // Don't search for initial empty string
-                .Throttle(TimeSpan.FromMilliseconds(500)) // Ignore subsequent changes that occur within 500 ms
+                .Throttle(TimeSpan.FromMilliseconds(500)) // Wait until there were no changes for 500 ms
                 .Select(text =>
-                    // Convert a task to an observable.
-                    // The nice thing here is that we get a cancellation token.
-                    // This token is cancelled when a new event occurs
-                    Observable.FromAsync(ct => Search(text, ct))
-                )
+                {
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        // No search string, no results
+                        return Observable.Return(ImmutableList<Person>.Empty);
+                    }
+                    else
+                    {
+                        // Convert a task to an observable.
+                        // The nice thing here is that we get a cancellation token.
+                        // Cancellation of this token is requested when a new event occurs.
+                        return Observable.FromAsync(ct => Search(text, ct));
+                    }
+                })
                 // Because we now have an IObservable<IObservable<...>> we can use switch
                 // to switch to the latest inner IObservable and only listen to changes of the latest inner IObservable.
-                // As soon as a new inner IObservable arrives the cancellation token from above
-                // is automatically cancelled.
+                // As soon as a new inner IObservable arrives cancellation of the cancellation token from above
+                // is automatically requested, so `ct.IsCancellationRequested` is `true`.
                 .Switch()
+                // ViewModel properties should always be set on the WPF thread (I think)
+                .ObserveOnDispatcher()
                 // Subscribing to an IObservable means that we register a listener.
                 // So without subscribing nothing happens (i.e. no search occurs)
                 // Subscribe also returns an IDisposable that when disposed deregisters all resources (event handlers, timers, etc.)
@@ -80,34 +75,45 @@ namespace WpfApplication1
                 .DisposeWith(_Disposable);
         }
 
+        private readonly ConcurrentQueue<Color> colorQueue =
+            new ConcurrentQueue<Color>(new[] { Colors.RosyBrown, Colors.PowderBlue, Colors.SpringGreen });
+        private static readonly Random rand = new Random();
         private async Task<ImmutableList<Person>> Search(string text, CancellationToken ct)
         {
-            try
+            using (GetColor(out var color))
             {
-                Log($"Starting search for {text}");
-                
-                await Task.Delay(TimeSpan.FromSeconds(2), ct); // Simulate work
-                var rand = new Random();
-                return Enumerable.Range(0, rand.Next(1, 30))
-                    .Select(i => new Person($"{text} {i + 1}", rand.Next(20, 50)))
-                    .ToImmutableList();
-            }
-            catch(OperationCanceledException)
-            {
-                Log($"Cancelled search for {text}");
-                throw;
-            }
-            finally
-            {
-                Log($"Finished search for {text}");
+                try
+                {
+                    Log($"Starting search for \"{text}\"", color, Colors.Black);
+                    await Task.Delay(TimeSpan.FromSeconds(2), ct); // Simulate work
+                    Log($"Finished search for \"{text}\"", color, Colors.Green);
+                    return Enumerable.Range(0, rand.Next(5, 10))
+                        .Select(i => new Person($"{text} {i + 1}", rand.Next(20, 50)))
+                        .ToImmutableList();
+                }
+                catch (OperationCanceledException)
+                {
+                    Log($"Cancelled search for \"{text}\"", color, Colors.Red);
+                    throw;
+                }
             }
         }
 
-        private void Log(string message)
+        private IDisposable GetColor(out Color color)
         {
-            LogMessages = ImmutableList<LogMessage>.Empty
-                    .Add(new LogMessage(message))
-                    .AddRange(LogMessages);
+            if (!colorQueue.TryDequeue(out var result))
+            {
+                color = Colors.Black;
+                return Disposable.Empty;
+            }
+            color = result;
+            return Disposable.Create(() => colorQueue.Enqueue(result));
+        }
+
+        private void Log(string message, Color backgroundColor, Color foregroundColor)
+        {
+            LogMessages = LogMessages
+                .Push(new LogMessage(message, backgroundColor, foregroundColor));
         }
 
         public void Dispose()
@@ -120,23 +126,23 @@ namespace WpfApplication1
     {
         public DateTime Time { get; } = DateTime.Now;
         public string Message { get; }
+        public Color BackgroundColor { get; }
+        public Color ForegroundColor { get; }
 
-        public LogMessage(string message)
+        public LogMessage(string message, Color backgroundColor, Color foregroundColor)
         {
             Message = message;
+            BackgroundColor = backgroundColor;
+            ForegroundColor = foregroundColor;
         }
     }
 
-    public class Person : ViewModel
+    [PropertyChanged.AddINotifyPropertyChangedInterface]
+    public class Person
     {
         public string Name { get; }
 
-        private int _Age;
-        public int Age
-        {
-            get { return _Age; }
-            set { SetProperty(ref _Age, value); }
-        }
+        public int Age { get; set; }
 
         public Person(string name, int age)
         {
