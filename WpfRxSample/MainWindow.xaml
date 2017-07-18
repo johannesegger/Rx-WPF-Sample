@@ -9,7 +9,8 @@
                       Height="768"
                       Width="1024"
                       WindowStartupLocation="CenterScreen"
-                      ResizeMode="CanResizeWithGrip">
+                      ResizeMode="CanResizeWithGrip"
+                      WindowState="Maximized">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Slider Minimum="0.5"
@@ -21,37 +22,17 @@
                     ToolTip="Zoom"/>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
-    <DockPanel Margin="10">
-        <DockPanel.LayoutTransform>
+    <Grid Margin="10">
+        <Grid.LayoutTransform>
             <ScaleTransform ScaleX="{Binding ZoomFactor}"
                             ScaleY="{Binding ZoomFactor}"/>
-        </DockPanel.LayoutTransform>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      DockPanel.Dock="Right">
-            <StackPanel>
-                <TextBlock Text="Log:" Margin="10 3 10 10" />
-                <ItemsControl ItemsSource="{Binding LogMessages}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Padding="10 5">
-                                <TextBlock.Foreground>
-                                    <SolidColorBrush Color="{Binding ForegroundColor}" />
-                                </TextBlock.Foreground>
-                                <TextBlock.Background>
-                                    <SolidColorBrush Color="{Binding BackgroundColor}" Opacity="0.5" />
-                                </TextBlock.Background>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0:HH:mm:ss.fff}: {1}">
-                                        <Binding Path="Time" />
-                                        <Binding Path="Message" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </ScrollViewer>
+        </Grid.LayoutTransform>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        
         <DockPanel>
             <TextBox DockPanel.Dock="Top"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
@@ -81,5 +62,37 @@
                 </ItemsControl>
             </ScrollViewer>
         </DockPanel>
-    </DockPanel>
+
+        <GridSplitter Grid.Column="1"
+                      Width="5"
+                      ResizeBehavior="PreviousAndNext"
+                      Margin="5 0"/>
+
+        <ScrollViewer Grid.Column="2"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Log:" Margin="0 3 0 0" />
+                <ItemsControl ItemsSource="{Binding LogMessages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Padding="10 5">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding ForegroundColor}" />
+                                </TextBlock.Foreground>
+                                <TextBlock.Background>
+                                    <SolidColorBrush Color="{Binding BackgroundColor}" Opacity="0.5" />
+                                </TextBlock.Background>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0:HH:mm:ss.fff}: {1}">
+                                        <Binding Path="Time" />
+                                        <Binding Path="Message" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Controls:MetroWindow>

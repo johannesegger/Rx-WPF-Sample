@@ -18,11 +18,11 @@ namespace WpfRxSample
 
         public string SearchText { get; set; }
 
-        public ImmutableList<Person> Persons { get; set; } = ImmutableList<Person>.Empty;
+        public ImmutableList<Person> Persons { get; private set; } = ImmutableList<Person>.Empty;
 
-        public double AverageAge { get; set; }
+        public double AverageAge { get; private set; }
 
-        public ImmutableStack<LogMessage> LogMessages { get; set; } = ImmutableStack<LogMessage>.Empty;
+        public ImmutableStack<LogMessage> LogMessages { get; private set; } = ImmutableStack<LogMessage>.Empty;
 
         public double ZoomFactor { get; set; } = 1;
 
