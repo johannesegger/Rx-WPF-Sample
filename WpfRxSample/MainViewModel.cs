@@ -1,12 +1,15 @@
-﻿using System;
+﻿using MiniReactiveMvvm;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace WpfRxSample
@@ -14,7 +17,10 @@ namespace WpfRxSample
     [PropertyChanged.AddINotifyPropertyChangedInterface]
     public class MainViewModel : IDisposable
     {
-        private readonly CompositeDisposable _Disposable = new CompositeDisposable();
+        private static readonly Random rand = new Random();
+        private readonly ConcurrentQueue<Color> colorQueue =
+            new ConcurrentQueue<Color>(new[] { Colors.RosyBrown, Colors.PowderBlue, Colors.SpringGreen });
+        private readonly CompositeDisposable disposable = new CompositeDisposable();
 
         public string SearchText { get; set; }
 
@@ -25,6 +31,8 @@ namespace WpfRxSample
         public ImmutableStack<LogMessage> LogMessages { get; private set; } = ImmutableStack<LogMessage>.Empty;
 
         public double ZoomFactor { get; set; } = 1;
+
+        public ICommand SearchRandomly { get; }
 
         public MainViewModel()
         {
@@ -46,17 +54,17 @@ namespace WpfRxSample
                     }
                 })
                 // Because we now have an IObservable<IObservable<...>> we can use switch
-                // to switch to the latest inner IObservable and only listen to changes of the latest inner IObservable.
-                // As soon as a new inner IObservable arrives cancellation of the cancellation token from above
+                // to switch to the latest inner observable and only listen to changes of the latest inner observable.
+                // As soon as a new inner observable arrives cancellation of the cancellation token from above
                 // is automatically requested, so `ct.IsCancellationRequested` is `true`.
                 .Switch()
                 // ViewModel properties should always be set on the WPF thread (I think)
                 .ObserveOnDispatcher()
-                // Subscribing to an IObservable means that we register a listener.
+                // Subscribing to an observable means that we register a listener.
                 // So without subscribing nothing happens (i.e. no search occurs)
                 // Subscribe also returns an IDisposable that when disposed deregisters all resources (event handlers, timers, etc.)
                 .Subscribe(persons => Persons = persons)
-                .DisposeWith(_Disposable);
+                .DisposeWith(disposable);
 
             this.Changed(p => p.Persons)
                 .Select(persons =>
@@ -66,18 +74,34 @@ namespace WpfRxSample
                         return Observable.Return(0.0); // Average age is 0 when there are no persons
                     }
                     return persons
-                        .Select(person => person.Changed(p => p.Age)) // Get IObservables for the ages of all persons
+                        .Select(person => person.Changed(p => p.Age)) // Get observables for the ages of all persons
                         .CombineLatest() // Combine the latest values of those observables
                         .Select(ages => ages.Average()); // Get the average age
                 })
                 .Switch() // Switch to the latest inner observable from the select statement above
                 .Subscribe(avgAge => AverageAge = avgAge) // Set the property
-                .DisposeWith(_Disposable);
+                .DisposeWith(disposable);
+
+            var searchRandomly = ReactiveCommand
+                .Create<object, string>(
+                    canExecute: this.Changed(p => p.SearchText)
+                        .Select(string.IsNullOrWhiteSpace),
+                    execute: async (_, ct) =>
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        return $"Random {rand.Next(1, 6)}";
+                    },
+                    scheduler: DispatcherScheduler.Current)
+                .DisposeWith(disposable);
+
+            searchRandomly
+                .ObserveOnDispatcher()
+                .Subscribe(p => SearchText = p)
+                .DisposeWith(disposable);
+
+            SearchRandomly = searchRandomly;
         }
 
-        private readonly ConcurrentQueue<Color> colorQueue =
-            new ConcurrentQueue<Color>(new[] { Colors.RosyBrown, Colors.PowderBlue, Colors.SpringGreen });
-        private static readonly Random rand = new Random();
         private async Task<ImmutableList<Person>> Search(string text, CancellationToken ct)
         {
             using (GetColor(out var color))
@@ -118,7 +142,7 @@ namespace WpfRxSample
 
         public void Dispose()
         {
-            _Disposable.Dispose();
+            disposable.Dispose();
         }
     }
 

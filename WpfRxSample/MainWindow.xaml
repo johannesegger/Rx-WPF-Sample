@@ -34,10 +34,14 @@
         </Grid.ColumnDefinitions>
         
         <DockPanel>
-            <TextBox DockPanel.Dock="Top"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Controls:TextBoxHelper.Watermark="Search text"
-                     Controls:TextBoxHelper.ClearTextButton="True"/>
+            <DockPanel DockPanel.Dock="Top">
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding SearchRandomly}"
+                        Content="☘" />
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Controls:TextBoxHelper.Watermark="Search text"
+                         Controls:TextBoxHelper.ClearTextButton="True"/>
+            </DockPanel>
             <TextBlock DockPanel.Dock="Bottom"
                        Text="{Binding AverageAge, StringFormat='Average age: {0:F2} years'}" />
             <ScrollViewer VerticalScrollBarVisibility="Auto"

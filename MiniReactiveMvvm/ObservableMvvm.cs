@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Reflection;
 
-namespace WpfRxSample
+namespace MiniReactiveMvvm
 {
     public static class ViewModelExtensions
     {
@@ -42,12 +42,12 @@ namespace WpfRxSample
                         })
                         .Switch(),
                     o => o.Cast<TProperty>())
-                .DistinctUntilChanged(); // TODO use reference equality
+                .DistinctUntilChanged(EqualityComparer<TProperty>.Default);
         }
 
         private static object GetDefaultValue(Type type)
         {
-            return type.IsValueType ? Activator.CreateInstance(type) : null;
+            return type.GetTypeInfo().IsValueType ? Activator.CreateInstance(type) : null;
         }
 
         private static IObservable<object> GetPropertyObservableFromInpcViewModel(
@@ -79,18 +79,6 @@ namespace WpfRxSample
 
             var param = Expression.Parameter(expr.Expression.Type, "p");
             yield return Expression.Lambda(Expression.Property(param, (PropertyInfo)expr.Member), param);
-        }
-
-        public static IObservable<TResult> Changed<TObj, TProperty1, TProperty2, TResult>(
-            this TObj viewModel,
-            Expression<Func<TObj, TProperty1>> propertyExpr1,
-            Expression<Func<TObj, TProperty2>> propertyExpr2,
-            Func<TProperty1, TProperty2, TResult> combine)
-        {
-            return Observable.CombineLatest(
-                viewModel.Changed(propertyExpr1),
-                viewModel.Changed(propertyExpr2),
-                combine);
         }
     }
 }
