@@ -1,18 +1,19 @@
-﻿<Controls:MetroWindow x:Class="WpfRxSample.MainWindow"
-                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      mc:Ignorable="d"
-                      Title="Reactive Extensions Sample App"
-                      Height="768"
-                      Width="1024"
-                      WindowStartupLocation="CenterScreen"
-                      ResizeMode="CanResizeWithGrip"
-                      WindowState="Maximized">
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
+﻿<mahapps:MetroWindow x:Class="WpfRxSample.MainWindow"
+                     xmlns:mahapps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     mc:Ignorable="d"
+                     Title="Reactive Extensions Sample App"
+                     TitleCharacterCasing="Normal"
+                     Height="768"
+                     Width="1024"
+                     WindowStartupLocation="CenterScreen"
+                     ResizeMode="CanResizeWithGrip"
+                     WindowState="Maximized">
+    <mahapps:MetroWindow.RightWindowCommands>
+        <mahapps:WindowCommands>
             <Slider Minimum="0.5"
                     Maximum="3"
                     Value="{Binding ZoomFactor}"
@@ -20,8 +21,8 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource FlatSlider}"
                     ToolTip="Zoom"/>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+        </mahapps:WindowCommands>
+    </mahapps:MetroWindow.RightWindowCommands>
     <Grid Margin="10">
         <Grid.LayoutTransform>
             <ScaleTransform ScaleX="{Binding ZoomFactor}"
@@ -39,8 +40,8 @@
                         Command="{Binding SearchRandomly}"
                         Content="☘" />
                 <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Controls:TextBoxHelper.Watermark="Search text"
-                         Controls:TextBoxHelper.ClearTextButton="True"/>
+                         mahapps:TextBoxHelper.Watermark="Search text"
+                         mahapps:TextBoxHelper.ClearTextButton="True"/>
             </DockPanel>
             <TextBlock DockPanel.Dock="Bottom"
                        Text="{Binding AverageAge, StringFormat='Average age: {0:F2} years'}" />
@@ -56,8 +57,8 @@
                                            VerticalAlignment="Center" />
                                 <TextBlock Text="&quot;, Age: "
                                            VerticalAlignment="Center" />
-                                <TextBox Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}"
-                                         Margin="5" />
+                                <mahapps:NumericUpDown Value="{Binding Age, UpdateSourceTrigger=PropertyChanged}"
+                                                       Margin="5" />
                                 <TextBlock Text=" years"
                                            VerticalAlignment="Center" />
                             </StackPanel>
@@ -99,4 +100,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</Controls:MetroWindow>
+</mahapps:MetroWindow>
