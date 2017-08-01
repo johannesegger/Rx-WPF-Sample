@@ -38,7 +38,8 @@
             <DockPanel DockPanel.Dock="Top">
                 <Button DockPanel.Dock="Right"
                         Command="{Binding SearchRandomly}"
-                        Content="☘" />
+                        Content="☘"
+                        Margin="5 0 0 0"/>
                 <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          mahapps:TextBoxHelper.Watermark="Search text"
                          mahapps:TextBoxHelper.ClearTextButton="True"/>
