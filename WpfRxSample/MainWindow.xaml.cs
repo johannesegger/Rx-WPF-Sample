@@ -15,20 +15,7 @@ namespace WpfRxSample
             InitializeComponent();
 
             Loaded += (s, e) => DataContext = new MainViewModel();
-            Observable
-                .FromEventPattern<CancelEventHandler, CancelEventArgs>(
-                    h => Closing += h,
-                    h => Closing -= h
-                )
-                .FirstAsync()
-                .Do(p =>
-                {
-                    p.EventArgs.Cancel = true;
-                    ((MainViewModel)DataContext).Dispose();
-                })
-                .Delay(TimeSpan.FromSeconds(1))
-                .ObserveOnDispatcher()
-                .Subscribe(_ => Application.Current.Shutdown());
+            Closed += (s, e) => ((MainViewModel)DataContext).Dispose();
         }
     }
 }
