@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfRxSample", "WpfRxSample\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniReactiveMvvm", "MiniReactiveMvvm\MiniReactiveMvvm.csproj", "{980187FA-7D79-4974-9BE9-8AF041B10D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rx.Test", "Rx.Test\Rx.Test.csproj", "{D959D44A-CF07-4978-BC1C-8746699FE405}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{980187FA-7D79-4974-9BE9-8AF041B10D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{980187FA-7D79-4974-9BE9-8AF041B10D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{980187FA-7D79-4974-9BE9-8AF041B10D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D959D44A-CF07-4978-BC1C-8746699FE405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D959D44A-CF07-4978-BC1C-8746699FE405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D959D44A-CF07-4978-BC1C-8746699FE405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D959D44A-CF07-4978-BC1C-8746699FE405}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
