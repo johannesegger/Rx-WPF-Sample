@@ -40,3 +40,10 @@ We previously noticed that `IObserver<T>.OnNext` is like an event handler, so wh
 In this case `IObservable<T>` is very similar to `IEnumerable<T>`. The interface itself has a very small surface, but concrete implementations of `IObservable<T>` can wrap an underlying observable and modify its data. E.g. when calling `source.Where(i => i > 10)` we wrap `source` inside a special implementation of `IObservable<T>`, that, when subscribed to, subscribes to `source` and only passes numbers greater than `10` to the subscribed observer.
 
 The de-facto standard for Reactive Programming in .NET using `IObservable<T>` and `IObserver<T>` is [Rx.NET](https://github.com/Reactive-Extensions/Rx.NET).
+
+## Learning resources
+
+* [http://introtorx.com](http://introtorx.com) - Good introduction to Rx.NET, which starts at the very beginning but covers some advanced topics as well.
+* [https://gist.github.com/staltz/868e7e9bc2a7b8c1f754](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754) - Another introduction to Reactive Programming by the creator of [Cycle.js](https://cycle.js.org/).
+* [http://reactivex.io](http://reactivex.io) - Probably the most comprehensive site for Reactive Programming. Contains a short introduction to Reactive Programming and documentation for many Rx operators in different languages.
+* [http://rxmarbles.com](http://rxmarbles.com) - Interactive marble diagrams for some RxJS operators.
