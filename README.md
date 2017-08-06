@@ -33,7 +33,7 @@ public interface IObserver<in T>
 An observer can _subscribe_ to and _unsubscribe_ from (using the returned `IDisposable`) an observable. While subscribed the observable _notifies_ the observer about new data (`OnNext`) and about the termination of the observable sequence (both successful (`OnCompleted`) or due to an error (`OnError`)).
 
 ### What's the difference to .NET events?
-We previously noticed that `IObserver<T>.OnNext` is like an event handler, so why not just use plain old .NET events? Because .NET events are missing a type for the event source, which means we can't pass e.g. `INotifyPropertyChanged.PropertyChanged` around to e.g. filter its data or combine it with other events before subscribing to it.
+We previously noticed that `IObserver<T>.OnNext` is like an event handler, so why not just use plain old .NET events? Because .NET events are missing a type for the _stream_ of events, which means we can't pass e.g. `INotifyPropertyChanged.PropertyChanged` around to e.g. filter its data or combine it with other events before subscribing to it.
 
 ### But wait! `IObservable<T>` defines only a single method. How can I do cool stuff like filtering data and combining observables?
 
