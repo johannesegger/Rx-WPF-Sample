@@ -7,10 +7,10 @@ using static Microsoft.Reactive.Testing.ReactiveTest;
 
 namespace Rx.Test
 {
-    public class RxTest
+    public class ThrottleTest
     {
         [Fact]
-        public void ThrottleTest()
+        public void ThrottleShouldWork()
         {
             var scheduler = new TestScheduler();
 
