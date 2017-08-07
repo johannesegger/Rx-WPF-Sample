@@ -9,7 +9,7 @@ A hopefully compelling example to use Reactive Extensions in WPF projects.
 
 The term _reactive_ sounds a lot like it's got to do with handling events, right? That's true, but _Reactive Programming_ is much more. It's about representing any changes that can happen within a system. And basically every system is constantly changing, is it a text box value, some database entries or just a simple object property. 
 
-### Reactive Programing in .NET
+### Reactive Programming in .NET
 
 There are two interfaces in the .NET BCL that are heavily used for Reactive Programming: `System.IObservable<T>` and `System.IObserver<T>`.
 
