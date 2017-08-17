@@ -44,8 +44,36 @@
                          mahapps:TextBoxHelper.Watermark="Search text"
                          mahapps:TextBoxHelper.ClearTextButton="True"/>
             </DockPanel>
-            <TextBlock DockPanel.Dock="Bottom"
-                       Text="{Binding AverageAge, StringFormat='Average age: {0:F2} years'}" />
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <TextBlock Text="Average age:" />
+                <Border Padding="5 0">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform x:Name="Position" />
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <TextBlock Text="{Binding AverageAge, StringFormat='{}{0:F2}', NotifyOnTargetUpdated=True}">
+                        <TextBlock.Triggers>
+                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Position" 
+                                                                       Storyboard.TargetProperty="X" 
+                                                                       RepeatBehavior="3x">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.025" Value="0"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.050" Value="2"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.075" Value="0"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.100" Value="-2"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.125" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </TextBlock.Triggers>
+                    </TextBlock>
+                </Border>
+                <TextBlock Text="years" />
+            </StackPanel>
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           DockPanel.Dock="Right">
                 <ItemsControl ItemsSource="{Binding Persons}">
