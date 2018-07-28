@@ -13,7 +13,7 @@ There are [many](http://introtorx.com/) [nice](https://gist.github.com/staltz/86
 ### Reactive Programming in .NET
 There are two interfaces in the .NET BCL that are heavily used for Reactive Programming: `System.IObservable<T>` and `System.IObserver<T>`.
 
-```
+```csharp
 public interface IObservable<out T>
 {
     IDisposable Subscribe(IObserver<T> observer);
@@ -38,7 +38,7 @@ We previously noticed that `IObserver<T>.OnNext` is like an event handler, so wh
 ### Similarities between `IObservable<T>` and `IEnumerable<T>`
 Being a .NET developer you most likely know `IEnumerable<T>` which represents a sequence of data. It declares a single method `IEnumerable<T>.GetEnumerator`, but still instances of it can be filtered, combined and more. It's the same with `IObservable<T>`. Although it only declares a single method `IObservable<T>.Subscribe` it enables sophisticated operations on it. The key here is the special implementations of these interfaces. They wrap zero or more inner instances and use the data of these inner instances to produce their own data. E.g. a very rudimentary implementation of a filter operator might look like this:
 
-```
+```csharp
 /// <summary>
 /// Filter data from an underlying observable sequence using a filter function.
 /// </summary>
@@ -87,7 +87,7 @@ public static class ObservableExtensions
 
 The .NET BCL only defines `System.IObservable<T>` but doesn't provide any implementations of it. It's up to library authors to implement some useful operators. In .NET there is only really [Rx.NET](https://github.com/Reactive-Extensions/Rx.NET) that defines a set of operators. Still, in a real application you will most likely implement custom operators. Rx.NET helps you a lot here. For a filter operator (which is built into Rx.NET anyway) this is trivial:
 
-```
+```csharp
 public static class ObservableExtensions
 {
     public static IObservable<T> Filter<T>(this IObservable<T> o, Func<T, bool> filter)
