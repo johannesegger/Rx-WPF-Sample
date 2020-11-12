@@ -19,7 +19,7 @@
                     Value="{Binding ZoomFactor}"
                     Width="100"
                     VerticalAlignment="Center"
-                    Style="{StaticResource FlatSlider}"
+                    Style="{StaticResource MahApps.Styles.Slider.Flat}"
                     ToolTip="Zoom"/>
         </mahapps:WindowCommands>
     </mahapps:MetroWindow.RightWindowCommands>

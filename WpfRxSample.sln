@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfRxSample", "WpfRxSample\WpfRxSample.csproj", "{10F0D0DE-650C-4200-956C-14BAFD9BFAB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfRxSample", "WpfRxSample\WpfRxSample.csproj", "{10F0D0DE-650C-4200-956C-14BAFD9BFAB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniReactiveMvvm", "MiniReactiveMvvm\MiniReactiveMvvm.csproj", "{980187FA-7D79-4974-9BE9-8AF041B10D62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rx.Test", "Rx.Test\Rx.Test.csproj", "{D959D44A-CF07-4978-BC1C-8746699FE405}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rx.Test", "Rx.Test\Rx.Test.csproj", "{D959D44A-CF07-4978-BC1C-8746699FE405}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +30,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19AEA940-5470-487B-99B4-825062517C60}
 	EndGlobalSection
 EndGlobal
