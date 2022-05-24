@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rx.Test
+﻿namespace Rx.Test
 {
     public static class DateTimeOffsetExtensions
     {

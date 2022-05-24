@@ -1,13 +1,9 @@
 ﻿using MiniReactiveMvvm;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -21,7 +17,7 @@ namespace WpfRxSample
             new ConcurrentQueue<Color>(new[] { Colors.RosyBrown, Colors.PowderBlue, Colors.SpringGreen });
         private readonly CompositeDisposable disposable = new CompositeDisposable();
 
-        public string SearchText { get; set; }
+        public string SearchText { get; set; } = "";
 
         public ImmutableList<Person> Persons { get; private set; } = ImmutableList<Person>.Empty;
 

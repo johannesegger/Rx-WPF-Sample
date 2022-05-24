@@ -1,10 +1,7 @@
-﻿using System;
-using System.Reactive.Concurrency;
+﻿using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MiniReactiveMvvm
@@ -46,14 +43,14 @@ namespace MiniReactiveMvvm
                 .DisposeWith(disposable);
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return canExecute;
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (!CanExecute(parameter))
             {

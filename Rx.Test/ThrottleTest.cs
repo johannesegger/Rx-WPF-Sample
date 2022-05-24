@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Xunit;

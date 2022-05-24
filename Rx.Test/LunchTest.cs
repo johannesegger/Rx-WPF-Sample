@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.Reactive.Testing;
-using System;
 using System.Collections.Immutable;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -56,7 +55,7 @@ namespace Rx.Test
 
         private static Recorded<Notification<ImmutableDictionary<TKey, TValue>>> OnNextDict<TKey, TValue>(
             long ticks,
-            ImmutableDictionary<TKey, TValue> value)
+            ImmutableDictionary<TKey, TValue> value) where TKey : notnull
         {
             return OnNext(
                 ticks,

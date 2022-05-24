@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Reactive.Linq;
-using System.Windows;
-
-namespace WpfRxSample
+﻿namespace WpfRxSample
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

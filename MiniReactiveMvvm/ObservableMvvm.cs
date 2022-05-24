@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -16,7 +13,7 @@ namespace MiniReactiveMvvm
         {
             return GetPropertyExpressions((MemberExpression)propertyExpr.Body)
                 .Aggregate(
-                    Observable.Return<object>(obj),
+                    Observable.Return<object?>(obj),
                     (viewModelObservable, expr) => viewModelObservable
                         .Select(o =>
                         {
@@ -45,12 +42,12 @@ namespace MiniReactiveMvvm
                 .DistinctUntilChanged(EqualityComparer<TProperty>.Default);
         }
 
-        private static object GetDefaultValue(Type type)
+        private static object? GetDefaultValue(Type type)
         {
             return type.GetTypeInfo().IsValueType ? Activator.CreateInstance(type) : null;
         }
 
-        private static IObservable<object> GetPropertyObservableFromInpcViewModel(
+        private static IObservable<object?> GetPropertyObservableFromInpcViewModel(
             INotifyPropertyChanged viewModel,
             string propertyName,
             Delegate getValue)
@@ -59,13 +56,13 @@ namespace MiniReactiveMvvm
                 .FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                     h => viewModel.PropertyChanged += h,
                     h => viewModel.PropertyChanged -= h)
-                .Where(p => p.EventArgs.PropertyName.Equals(propertyName, StringComparison.Ordinal))
+                .Where(p => p.EventArgs.PropertyName == null || p.EventArgs.PropertyName.Equals(propertyName, StringComparison.Ordinal))
                 .Select(p => p.Sender)
                 .StartWith(viewModel)
                 .Select(p => getValue.DynamicInvoke(p));
         }
 
-        private static IEnumerable<LambdaExpression> GetPropertyExpressions(MemberExpression expr)
+        private static IEnumerable<LambdaExpression> GetPropertyExpressions(MemberExpression? expr)
         {
             if (expr == null)
             {
