@@ -12,10 +12,10 @@ namespace WpfRxSample
     [PropertyChanged.AddINotifyPropertyChangedInterface]
     public class MainViewModel : IDisposable
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random rand = new();
         private readonly ConcurrentQueue<Color> colorQueue =
             new ConcurrentQueue<Color>(new[] { Colors.RosyBrown, Colors.PowderBlue, Colors.SpringGreen });
-        private readonly CompositeDisposable disposable = new CompositeDisposable();
+        private readonly CompositeDisposable disposable = new();
 
         public string SearchText { get; set; } = "";
 
