@@ -10,13 +10,13 @@ namespace MiniReactiveMvvm
     {
         private readonly CompositeDisposable disposable = new CompositeDisposable();
         private readonly ISubject<int> executionCountSubject = new BehaviorSubject<int>(0);
-        private readonly ISubject<TIn, TOut> executeSubject;
+        private readonly ISubject<TIn?, TOut> executeSubject;
 
         private bool canExecute = true;
 
         public ReactiveCommand(
             IObservable<bool> canExecuteObservable,
-            ISubject<TIn, TOut> executeSubject,
+            ISubject<TIn?, TOut> executeSubject,
             IScheduler scheduler)
         {
             canExecuteObservable
@@ -58,7 +58,7 @@ namespace MiniReactiveMvvm
             }
 
             executionCountSubject.OnNext(1);
-            executeSubject.OnNext((TIn)parameter);
+            executeSubject.OnNext((TIn?)parameter);
         }
 
         public IDisposable Subscribe(IObserver<TOut> observer)
@@ -74,17 +74,17 @@ namespace MiniReactiveMvvm
 
     public static class ReactiveCommand
     {
-        public static ReactiveCommand<TIn, TOut> Create<TIn, TOut>(
+        public static ReactiveCommand<TIn?, TOut> Create<TIn, TOut>(
             IObservable<bool> canExecute,
-            Func<TIn, CancellationToken, Task<TOut>> execute,
+            Func<TIn?, CancellationToken, Task<TOut>> execute,
             IScheduler scheduler)
         {
-            var executeSubject = new Subject<TIn>();
+            var executeSubject = new Subject<TIn?>();
             var resultObservable = executeSubject
                 .Select(p => Observable.FromAsync(ct => execute(p, ct)))
                 .Switch();
 
-            return new ReactiveCommand<TIn, TOut>(
+            return new ReactiveCommand<TIn?, TOut>(
                 canExecute,
                 Subject.Create(executeSubject, resultObservable),
                 scheduler);
