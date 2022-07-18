@@ -90,7 +90,6 @@ namespace WpfRxSample
                 .DisposeWith(disposable);
 
             searchRandomly
-                .ObserveOnDispatcher()
                 .Subscribe(p => SearchText = p)
                 .DisposeWith(disposable);
 
