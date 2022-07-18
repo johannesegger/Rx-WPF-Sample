@@ -69,13 +69,22 @@ namespace MiniReactiveMvvm
                 yield break;
             }
 
-            foreach (var parentExpression in GetPropertyExpressions(expr.Expression as MemberExpression))
+            if (expr.Expression is MemberExpression parentExpression)
             {
-                yield return parentExpression;
+                foreach (var ancestorExpression in GetPropertyExpressions(parentExpression))
+                {
+                    yield return ancestorExpression;
+                }
             }
-
-            var param = Expression.Parameter(expr.Expression.Type, "p");
-            yield return Expression.Lambda(Expression.Property(param, (PropertyInfo)expr.Member), param);
+            else if (expr.Expression is ParameterExpression parameterExpression)
+            {
+                var param = Expression.Parameter(parameterExpression.Type, "p");
+                yield return Expression.Lambda(Expression.Property(param, (PropertyInfo)expr.Member), param);
+            }
+            else
+            {
+                throw new Exception($"Expected \"{expr.Expression}\" to be either a {nameof(MemberExpression)} or a {nameof(ParameterExpression)}");
+            }
         }
     }
 }
