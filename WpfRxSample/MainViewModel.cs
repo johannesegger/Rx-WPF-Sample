@@ -83,7 +83,7 @@ namespace WpfRxSample
                         .Select(string.IsNullOrWhiteSpace),
                     execute: async (_, ct) =>
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1), ct);
                         return $"Random {rand.Next(1, 6)}";
                     },
                     scheduler: DispatcherScheduler.Current)
