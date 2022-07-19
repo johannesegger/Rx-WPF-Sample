@@ -1,9 +1,9 @@
 # Rx-WPF-Sample
 A hopefully compelling example to use Reactive Extensions in WPF projects.
 
-## Build steps
-1. Restore NuGet packages: `nuget restore .`
-1. Build project: `msbuild WpfRxSample.sln`
+## Run
+* Sample application: `dotnet run --project WpfRxSample`
+* Tests: `dotnet test Rx.Test`
 
 ## What is Reactive Programming
 The term reactive sounds a lot like it's got to do with handling events, right? That's true, but Reactive Programming is much more. It's about representing any changes that can happen within a system. And basically every system is constantly changing, is it a text box value, some database entries or just a simple object property.
