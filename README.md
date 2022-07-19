@@ -85,7 +85,7 @@ public static class ObservableExtensions
 }
 ```
 
-The .NET BCL only defines `System.IObservable<T>` but doesn't provide any implementations of it. It's up to library authors to implement some useful operators. In .NET there is only really [Rx.NET](https://github.com/Reactive-Extensions/Rx.NET) that defines a set of operators. Still, in a real application you will most likely implement custom operators. Rx.NET helps you a lot here. For a filter operator (which is built into Rx.NET anyway) this is trivial:
+The .NET BCL only defines `System.IObservable<T>` but doesn't provide any implementations of it. It's up to library authors to implement some useful operators. In .NET there is only really [Rx.NET](https://github.com/dotnet/reactive) that defines a set of operators. Still, in a real application you will most likely implement custom operators. Rx.NET helps you a lot here. For a filter operator (which is built into Rx.NET anyway) this is trivial:
 
 ```csharp
 public static class ObservableExtensions
