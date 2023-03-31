@@ -14,32 +14,36 @@ namespace MiniReactiveMvvm
             return GetPropertyExpressions((MemberExpression)propertyExpr.Body)
                 .Aggregate(
                     Observable.Return<object?>(obj),
-                    (viewModelObservable, expr) => viewModelObservable
-                        .Select(o =>
-                        {
-                            if (o == null)
-                            {
-                                return Observable.Return(GetDefaultValue(expr.ReturnType));
-                            }
-                            else
-                            {
-                                var getValue = expr.Compile();
-                                if (o is INotifyPropertyChanged inpc)
-                                {
-                                    return GetPropertyObservableFromInpcViewModel(
-                                        inpc,
-                                        ((MemberExpression)expr.Body).Member.Name,
-                                        getValue);
-                                }
-                                else
-                                {
-                                    return Observable.Return(getValue.DynamicInvoke(o));
-                                }
-                            }
-                        })
-                        .Switch(),
-                    o => o.Cast<TProperty>())
+                    ObserveProperty,
                 .DistinctUntilChanged(EqualityComparer<TProperty>.Default);
+        }
+
+        private static IObservable<object?> ObserveProperty(IObservable<object?> viewModelObservable, LambdaExpression expr)
+        {
+            return viewModelObservable
+                .Select(o =>
+                {
+                    if (o == null)
+                    {
+                        return Observable.Return(GetDefaultValue(expr.ReturnType));
+                    }
+                    else
+                    {
+                        var getValue = expr.Compile();
+                        if (o is INotifyPropertyChanged inpc)
+                        {
+                            return GetPropertyObservableFromInpcViewModel(
+                                inpc,
+                                ((MemberExpression)expr.Body).Member.Name,
+                                getValue);
+                        }
+                        else
+                        {
+                            return Observable.Return(getValue.DynamicInvoke(o));
+                        }
+                    }
+                })
+                .Switch();
         }
 
         private static object? GetDefaultValue(Type type)
