@@ -15,6 +15,7 @@ namespace MiniReactiveMvvm
                 .Aggregate(
                     Observable.Return<object?>(obj),
                     ObserveProperty,
+                    o => o!.Cast<TProperty>()) // `!` should be safe here
                 .DistinctUntilChanged(EqualityComparer<TProperty>.Default);
         }
 
